@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build VPK
-        run: cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 . && make
+        run: cmake . && make
 
       - name: Upload VPK artifact
         uses: actions/upload-artifact@v4

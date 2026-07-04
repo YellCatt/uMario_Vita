@@ -1,7 +1,4 @@
-cmake_minimum_required(VERSION 2.82)
-
-file(GLOB_RECURSE uMario_SOURCES "uNext/*.cpp")
-add_executable(${CMAKE_PROJECT_NAME} ${uMario_SOURCES})
+cmake_minimum_required(VERSION 3.5)
 
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
   if(DEFINED ENV{VITASDK})
@@ -13,6 +10,10 @@ endif()
 
 project(uMario)
 include("${VITASDK}/share/vita.cmake" REQUIRED)
+
+file(GLOB_RECURSE uMario_SOURCES "uNext/*.cpp")
+add_executable(${CMAKE_PROJECT_NAME} ${uMario_SOURCES})
+
 
 set(VITA_APPNAME  "Mario")
 set(VITA_TITLEID  "HMRL00002")
