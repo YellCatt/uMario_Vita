@@ -34,6 +34,10 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 	SDL2_mixer
 	SDL2
 
+	opusfile
+	opus
+	xmp
+
 	vorbisfile
 	vorbis
 	ogg
@@ -53,6 +57,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 	SceTouch_stub
 	SceMotion_stub
 )
+
 
 vita_create_self(${CMAKE_PROJECT_NAME}.self ${CMAKE_PROJECT_NAME})
 
