@@ -29,8 +29,19 @@ jobs:
           name: uMario.vpk
           path: uMario.vpk
 
-      - name: Release
+      - name: Release (tag)
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: uMario.vpk
+
+      - name: Release (latest)
+        if: github.ref == 'refs/heads/master'
+        uses: ncipollo/release-action@v1
+        with:
+          tag: latest
+          name: "Latest Build"
+          prerelease: true
+          artifacts: uMario.vpk
+          allowUpdates: true
+          replacesArtifacts: true
