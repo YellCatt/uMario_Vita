@@ -13,12 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: vitasdk/vitasdk:latest
-    permissions:
-      contents: write
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: vdpm opusfile libxmp
 
       - name: Build VPK
         run: cmake . && make
@@ -29,19 +30,31 @@ jobs:
           name: uMario.vpk
           path: uMario.vpk
 
-      - name: Release (tag)
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: uMario.vpk
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v'))
 
-      - name: Release (latest)
-        if: github.ref == 'refs/heads/master'
-        uses: ncipollo/release-action@v1
+    steps:
+      - name: Download VPK artifact
+        uses: actions/download-artifact@v4
         with:
-          tag: latest
-          name: "Latest Build"
-          prerelease: true
-          artifacts: uMario.vpk
-          allowUpdates: true
-          replacesArtifacts: true
+          name: uMario.vpk
+
+      - name: Create Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            VERSION="${{ github.ref_name }}"
+            TITLE="Release $VERSION"
+          else
+            VERSION="v$(date +%Y%m%d-%H%M%S)"
+            TITLE="Latest Build $VERSION"
+          fi
+          gh release create "$VERSION" \
+            --title "$TITLE" \
+            --notes "uMario Vita automatic build" \
+            uMario.vpk
